@@ -1,0 +1,16 @@
+[tool.pytest.ini_options]
+testpaths=["test/*"]
+python_files="*.py"
+
+[tool.coverage.run]
+branch = true
+source = ["project"]
+command_line = "-m pytest"
+omit = ["test/*", "project/ui/*", "project/__main__.py", "project/application.py", "project/UI_sudoku/*", "project/UI_main.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+
+[tool.coverage.xml]
+output = "coverage.xml"

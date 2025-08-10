@@ -1,0 +1,44 @@
+image: python:3.12
+
+before_script:
+  - python -m pip install --upgrade pip
+  - pip install pipenv
+  - pipenv sync
+
+stages:
+  - Static Analysis
+  - Test
+
+mypy:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - pipenv run mypy .
+
+pylint_project:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - pipenv run pylint project/**/*.py
+
+pylint_tests:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - pipenv run pylint test/**/*.py --disable c0116
+
+tests:
+  stage: Test
+  allow_failure: true
+  script:
+    - pipenv run coverage run
+    - pipenv run coverage report
+    - pipenv run coverage xml
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    expire_in: 30 days
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
